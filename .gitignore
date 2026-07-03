@@ -4,6 +4,10 @@
 # Obsidian 本地配置
 .obsidian/
 
+# claude 相关插件
+.claude/
+.claudian/
+
 # aider AI 对话记录
 .aider*
 
