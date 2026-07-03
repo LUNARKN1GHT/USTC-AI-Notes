@@ -1,0 +1,13 @@
+# macOS
+.DS_Store
+
+# Obsidian 本地配置
+.obsidian/
+
+# aider AI 对话记录
+.aider*
+
+# 版权材料(讲义 / 作业 / 考试重点)——不要公开
+*.pdf
+课后作业/
+26春期末重点.png
