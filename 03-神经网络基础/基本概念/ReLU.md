@@ -6,6 +6,7 @@ aliases:
   - PReLU
   - ELU
 ---
+
 # ReLU
 
 ReLU：Rectified Linear Unit，通过非饱和性设计改善梯度传播。标准的 ReLU 定义为
@@ -23,7 +24,7 @@ $$
 Leaky ReLU：标准的 ReLU 有点过于激进了，我们可以折中，负区间用系数压住。能有效缓解神经元死亡现象。
 
 $$
-\text{LReLU}(z) = 
+\text{LReLU}(z) =
 
 \left\{\begin{matrix}
  z,  & z > 0\\
@@ -36,7 +37,7 @@ $$
 Parameterize ReLU：上述的 [[ReLU|LReLU]] 似乎有点死板，没事，我们把这梯度变成可变参数：
 
 $$
-\text{LReLU}(z) = 
+\text{LReLU}(z) =
 
 \left\{\begin{matrix}
  z,  & z > 0\\
@@ -51,7 +52,7 @@ $$
 Exponential Linear Unit: 用指数函数来做，其衰减性会更好一些
 
 $$
-\text{ELU}(z) = 
+\text{ELU}(z) =
 
 \left\{\begin{matrix}
  z & z > 0 \\

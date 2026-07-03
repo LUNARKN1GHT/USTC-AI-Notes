@@ -4,11 +4,13 @@ tags:
 aliases:
   - 循环神经网络
 ---
+
 循环神经网络通过在时间维度上共享参数，实现序列数据的逐步信息累计与传递。核心结构可以表示为
 
 $$
 h_t = \sigma(W_x x_t + W_H h_{t-1} + b_h), \quad y_t = \phi(W_y h_t + b_y)
 $$
+
 各个变量的意义如下：
 
 - $X_t \in \mathbb{R}^{d_x}, h_t \in \mathbb{R}^{d_h}, y_t \in \mathbb{R}^{d_y}$ 分别为第 $t$ 步的输入、隐藏状态与输出向量，$d_x, d_h, d_y$ 依次表示这些向量的维度
