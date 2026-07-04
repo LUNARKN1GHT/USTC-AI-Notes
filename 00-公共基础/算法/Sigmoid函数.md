@@ -5,6 +5,8 @@ aliases:
   - Sigmoid
 ---
 
+# Sigmoid函数
+
 Sigmoid函数可以讲任何实数值压缩到 $(0,1)$ 之间，正好是概率的定义域：
 
 $$
