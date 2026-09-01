@@ -25,8 +25,18 @@
 
 笔记以 Markdown 编写，正文采用 [Obsidian](https://obsidian.md/) 风格的双向链接（`[[...]]`），用 Obsidian 打开体验最佳。README 与章节入口同时提供标准 Markdown 链接，方便在 GitHub 上浏览。
 
+## 参与贡献
+
+欢迎提交纠错、补充解释、数值例子、参考资料和导航改进。开始前请阅读 [贡献指南](CONTRIBUTING.md)与[署名规则](ATTRIBUTION.md)，并在提交 Pull Request 前运行：
+
+```bash
+ruby scripts/check_notes.rb
+```
+
+所有贡献者保留自己贡献部分的著作权，并同意合并后的内容按 CC BY 4.0 发布。Git commit 和 Pull Request 记录作为主要贡献署名依据。
+
 ## 许可
 
-本仓库内容采用 [CC BY 4.0](LICENSE) 许可协议，转载请署名。
+本仓库内容采用 [CC BY 4.0](LICENSE) 许可协议。转载或改编时请保留来源、许可链接并注明是否修改，具体见[署名与转载规则](ATTRIBUTION.md)。
 
 > 笔记仅代表个人理解，如有谬误欢迎通过 Issue 或 PR 指正。

@@ -16,6 +16,12 @@ def relative(path)
   Pathname.new(path).relative_path_from(Pathname.new(ROOT)).to_s
 end
 
+def without_code_examples(content)
+  content
+    .gsub(/```.*?```/m, "")
+    .gsub(/`[^`\n]*`/, "")
+end
+
 def parse_frontmatter(content)
   lines = content.lines
   return { lines: [], body: content, aliases: [], status: nil } unless lines.first&.strip == "---"
@@ -48,7 +54,7 @@ def parse_frontmatter(content)
   }
 end
 
-markdown_files = Dir.glob(File.join(ROOT, "**", "*.md"))
+markdown_files = Dir.glob(File.join(ROOT, "**", "*.md"), File::FNM_DOTMATCH)
                     .reject { |path| path.include?("/.git/") }
                     .sort
 
@@ -67,6 +73,7 @@ markdown_files.each do |path|
   end
 
   documents[path] = { content: content, metadata: metadata }
+  prose = without_code_examples(content)
   stem = File.basename(path, ".md")
   rel_without_ext = rel.sub(/\.md\z/, "")
   ([stem, rel_without_ext] + metadata[:aliases]).each { |name| names[name] << rel }
@@ -79,7 +86,7 @@ markdown_files.each do |path|
     errors << "#{rel}: 未知 status '#{metadata[:status]}'"
   end
 
-  math_fences = content.lines.count do |line|
+  math_fences = prose.lines.count do |line|
     line.match?(/^\s*>?\s*\$\$\s*$/)
   end
   errors << "#{rel}: 展示公式的 $$ 没有成对出现" if math_fences.odd?
@@ -87,7 +94,7 @@ markdown_files.each do |path|
   content.lines.each_with_index do |line, index|
     errors << "#{rel}:#{index + 1}: 行尾有多余空白" if line.match?(/[ \t]+\n\z/)
 
-    normalized = line.sub(/^\s*>\s?/, "").strip
+    normalized = line.gsub(/`[^`\n]*`/, "").sub(/^\s*>\s?/, "").strip
     if normalized.include?("$$") && normalized != "$$"
       errors << "#{rel}:#{index + 1}: 展示公式应让 $$ 单独占行"
     end
@@ -107,19 +114,17 @@ end
 documents.each do |path, document|
   rel = relative(path)
   content = document[:content]
+  prose = without_code_examples(content)
 
-  # README 中包含用于说明语法的 `[[...]]` 示例，不把它当作真实双链。
-  unless rel == "README.md"
-    content.scan(/!?\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/) do |match|
-      target = match[0].tr("\\", "/").strip
-      basename = File.basename(target)
-      source_relative = File.expand_path(target, File.dirname(path))
-      root_relative = File.expand_path(target, ROOT)
+  prose.scan(/!?\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/) do |match|
+    target = match[0].tr("\\", "/").strip
+    basename = File.basename(target)
+    source_relative = File.expand_path(target, File.dirname(path))
+    root_relative = File.expand_path(target, ROOT)
 
-      resolved = names.key?(target) || names.key?(basename) ||
-                 File.exist?(source_relative) || File.exist?(root_relative)
-      errors << "#{rel}: 无法解析双链 [[#{target}]]" unless resolved
-    end
+    resolved = names.key?(target) || names.key?(basename) ||
+               File.exist?(source_relative) || File.exist?(root_relative)
+    errors << "#{rel}: 无法解析双链 [[#{target}]]" unless resolved
   end
 
   content.scan(/\]\(([^)]+)\)/) do |match|
