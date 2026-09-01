@@ -2,6 +2,13 @@
 tags:
   - 类型/算法
 ---
-# skip-gram
 
-skip-gram 是 word2vec 的一种训练方式：给定中心词，预测其上下文窗口内的词，通过最大化上下文词出现的概率来学习[[词向量]]。
+# Skip-gram
+
+Skip-gram 根据中心词预测其上下文词。给定中心词 $w_t$ 和窗口内上下文，训练目标是最大化：
+
+$$
+\sum_t\sum_{-c\le j\le c,\,j\ne0}\log P(w_{t+j}\mid w_t).
+$$
+
+完整 Softmax 在词表很大时计算昂贵，实践中常使用负采样或层次 Softmax。
