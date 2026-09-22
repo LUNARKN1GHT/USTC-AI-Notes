@@ -18,3 +18,8 @@ AGENTS.md
 *.pdf
 课后作业/
 26春期末重点.png
+
+*.zip
+.pdf-build
+
+.vscode/
