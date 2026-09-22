@@ -8,6 +8,9 @@
 .claude/
 .claudian/
 
+# Agent 背景文件
+AGENTS.md
+
 # aider AI 对话记录
 .aider*
 
