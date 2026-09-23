@@ -21,5 +21,6 @@ AGENTS.md
 
 *.zip
 .pdf-build
+.build/
 
 .vscode/
