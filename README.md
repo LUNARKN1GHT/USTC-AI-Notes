@@ -4,6 +4,7 @@
 
 ## 开始阅读
 
+- [在线阅读](https://lunarkn1ght.github.io/notes/)：适合在浏览器中搜索、跳转和阅读公式。
 - [课程知识地图](人工智能数学原理与算法A.md)：建议从这里开始，了解各章之间的逻辑关系。
 - 每章由一篇章节索引、若干主题笔记，以及“基本概念 / 算法 / 定理”卡片组成。
 - 笔记仍在持续校订；个别页面可能是简要提纲，而非完整教程。
@@ -34,6 +35,16 @@ ruby scripts/check_notes.rb
 ```
 
 所有贡献者保留自己贡献部分的著作权，并同意合并后的内容按 CC BY 4.0 发布。Git commit 和 Pull Request 记录作为主要贡献署名依据。
+
+## 本地预览网站
+
+```bash
+python3 -m pip install -r requirements-docs.txt
+python3 scripts/prepare_docs.py
+python3 -m mkdocs serve
+```
+
+个人主页的部署流程会从本仓库 `main` 分支读取内容，并发布到 `/notes/`。
 
 ## 许可
 

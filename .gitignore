@@ -8,6 +8,9 @@
 .claude/
 .claudian/
 
+# Agent 背景文件
+AGENTS.md
+
 # aider AI 对话记录
 .aider*
 
@@ -15,3 +18,9 @@
 *.pdf
 课后作业/
 26春期末重点.png
+
+*.zip
+.pdf-build
+.build/
+
+.vscode/

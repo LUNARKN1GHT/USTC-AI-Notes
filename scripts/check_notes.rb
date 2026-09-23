@@ -55,7 +55,7 @@ def parse_frontmatter(content)
 end
 
 markdown_files = Dir.glob(File.join(ROOT, "**", "*.md"), File::FNM_DOTMATCH)
-                    .reject { |path| path.include?("/.git/") }
+                    .reject { |path| path.include?("/.git/") || path.include?("/.build/") }
                     .sort
 
 errors = []
