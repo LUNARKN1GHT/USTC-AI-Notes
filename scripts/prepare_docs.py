@@ -10,6 +10,7 @@ import shutil
 ROOT = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / ".build" / "docs"
 PUBLIC_DIRECTORIES = (
+    "assets",
     "00-公共基础",
     "00-数学基础",
     "01-人工智能概述",
