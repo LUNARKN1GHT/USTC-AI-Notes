@@ -1,7 +1,7 @@
 site_name: 人工智能数学原理与算法 · 课程笔记
 site_description: 从数学基础到机器学习、图神经网络、Transformer、自监督学习与强化学习的课程笔记
 site_author: 李亦凡
-site_url: https://lunarkn1ght.github.io/notes/
+site_url: https://lunarkn1ght.github.io/notes/USTC-AI-Notes/
 repo_url: https://github.com/LUNARKN1GHT/USTC-AI-Notes
 repo_name: LUNARKN1GHT/USTC-AI-Notes
 edit_uri: edit/main/
@@ -77,11 +77,11 @@ extra_javascript:
   - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
 
 extra:
-  homepage: https://lunarkn1ght.github.io/
+  homepage: https://lunarkn1ght.github.io/notes/
   social:
     - icon: fontawesome/solid/house
-      link: https://lunarkn1ght.github.io/
-      name: 返回个人主页
+      link: https://lunarkn1ght.github.io/notes/
+      name: 返回笔记总目录
     - icon: fontawesome/brands/github
       link: https://github.com/LUNARKN1GHT/USTC-AI-Notes
       name: GitHub 仓库
