@@ -76,6 +76,14 @@ def build_link_index() -> tuple[dict[str, Path], dict[str, Path]]:
 def convert_wikilinks(path: Path, pages: dict[str, Path], assets: dict[str, Path]) -> None:
     """Convert Obsidian links in the staged copy without touching source notes."""
     source = path.read_text(encoding="utf-8")
+    # Keep editorial status in the source vault, but don't expose it as a
+    # Material navigation status icon in the public site.
+    source = re.sub(
+        r"(?m)^status:\s*(?:stub|draft|reviewed)\s*\n",
+        "",
+        source,
+        count=1,
+    )
     in_fence = False
     output: list[str] = []
 
