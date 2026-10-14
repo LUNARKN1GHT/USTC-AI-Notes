@@ -51,3 +51,5 @@ python3 -m mkdocs serve
 本仓库内容采用 [CC BY 4.0](LICENSE) 许可协议。转载或改编时请保留来源、许可链接并注明是否修改，具体见[署名与转载规则](ATTRIBUTION.md)。
 
 > 笔记仅代表个人理解，如有谬误欢迎通过 Issue 或 PR 指正。
+
+go
