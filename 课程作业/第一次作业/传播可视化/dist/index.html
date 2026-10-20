@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>一条误差的旅程 · 前向与反向传播</title>
+    <meta
+      name="description"
+      content="逐步探索一个小型 ReLU 网络：前向计算、链式法则、梯度下降与损失变化。"
+    />
+    <style>
+      :root {
+        --bg: #f3f1e9;
+        --ink: #183932;
+        --muted: #61746b;
+        --line: #d2dbd1;
+        --green: #11715b;
+        --orange: #c3542d;
+        --gold: #ede8cf;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family:
+          system-ui,
+          -apple-system,
+          "PingFang SC",
+          sans-serif;
+      }
+      button,
+      input {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:focus-visible,
+      input:focus-visible,
+      [tabindex]:focus-visible {
+        outline: 3px solid #d07835;
+        outline-offset: 4px;
+      }
+      header {
+        max-width: 1260px;
+        margin: auto;
+        padding: 35px 32px 24px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 2px;
+        color: var(--green);
+        font-weight: 700;
+      }
+      h1 {
+        font-size: clamp(30px, 4vw, 48px);
+        letter-spacing: -2px;
+        margin: 12px 0;
+      }
+      header p {
+        color: var(--muted);
+        margin: 0;
+        line-height: 1.7;
+      }
+      .stamp {
+        font-size: 12px;
+        border: 1px solid var(--line);
+        padding: 10px 16px;
+        border-radius: 24px;
+        white-space: nowrap;
+        margin-top: 6px;
+      }
+      .layout {
+        max-width: 1260px;
+        margin: auto;
+        padding: 0 32px 35px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 285px;
+        gap: 20px;
+      }
+      .panel {
+        background: #fffdf8;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+      }
+      .main {
+        overflow: hidden;
+      }
+      .steps {
+        display: flex;
+        gap: 4px;
+        padding: 17px 18px;
+        border-bottom: 1px solid var(--line);
+        flex-wrap: wrap;
+      }
+      .step {
+        background: none;
+        border: none;
+        color: var(--muted);
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 13px;
+      }
+      .step.active {
+        background: var(--ink);
+        color: white;
+      }
+      .step.done {
+        color: var(--green);
+      }
+      .scene {
+        padding: 25px 24px 10px;
+      }
+      .scene-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: center;
+      }
+      .scene-top h2 {
+        font-size: 20px;
+        margin: 0;
+      }
+      .phase-label {
+        font-size: 11px;
+        letter-spacing: 1px;
+        color: var(--green);
+      }
+      .graph {
+        width: 100%;
+        height: auto;
+        display: block;
+        margin: 10px auto;
+      }
+      svg text {
+        font-family: inherit;
+      }
+      .wire {
+        stroke: #a4b6aa;
+        stroke-width: 2.5;
+        fill: none;
+      }
+      .wire.hot {
+        stroke: var(--green);
+        stroke-width: 3.5;
+        stroke-dasharray: 9 5;
+        animation: flow 2s linear infinite;
+      }
+      .back .wire.hot {
+        stroke: var(--orange);
+        animation-direction: reverse;
+      }
+      .wire.picked {
+        stroke: var(--orange);
+        stroke-width: 5;
+      }
+      .wirehit {
+        stroke: transparent;
+        stroke-width: 24;
+        fill: none;
+        cursor: pointer;
+      }
+      .edge-label {
+        font-size: 13px;
+        fill: var(--muted);
+        cursor: pointer;
+        paint-order: stroke;
+        stroke: #fffdf8;
+        stroke-width: 7;
+        stroke-linejoin: round;
+      }
+      .node circle {
+        fill: #f4f6ef;
+        stroke: #b6c7ba;
+        stroke-width: 1.6;
+      }
+      .node.lit circle {
+        fill: #e5f1e6;
+        stroke: var(--green);
+      }
+      .node text.title {
+        font-size: 13px;
+        fill: var(--muted);
+      }
+      .node text.value {
+        font-size: 20px;
+        font-weight: 650;
+        fill: var(--ink);
+      }
+      .node text.detail {
+        font-size: 10px;
+        fill: var(--muted);
+      }
+      .back .node.lit circle {
+        fill: #fbede2;
+        stroke: var(--orange);
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+      }
+      .explain {
+        background: #eef2e8;
+        margin: 20px 24px;
+        border-radius: 12px;
+        padding: 20px;
+        min-height: 144px;
+      }
+      .explain h3 {
+        margin: 0 0 10px;
+        font-size: 16px;
+      }
+      .explain p {
+        font-size: 14px;
+        line-height: 1.8;
+        margin: 5px 0;
+      }
+      .math {
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        color: var(--green);
+        overflow-wrap: anywhere;
+      }
+      .back .math {
+        color: var(--orange);
+      }
+      .controls {
+        display: flex;
+        padding: 0 24px 22px;
+        gap: 10px;
+        align-items: center;
+      }
+      .btn {
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: transparent;
+        color: var(--ink);
+        font-size: 13px;
+      }
+      .primary {
+        background: var(--ink);
+        color: white;
+        border-color: var(--ink);
+      }
+      .btn:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+      .controls .count {
+        margin-left: auto;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      aside {
+        padding: 23px 20px;
+        align-self: start;
+      }
+      aside h2 {
+        margin: 0 0 8px;
+        font-size: 18px;
+      }
+      aside p {
+        font-size: 12px;
+        line-height: 1.7;
+        color: var(--muted);
+      }
+      .field-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 9px;
+        margin: 18px 0;
+      }
+      .field label {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 7px;
+      }
+      .field input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        padding: 8px;
+        color: var(--ink);
+      }
+      .slider-head {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin-top: 19px;
+      }
+      input[type="range"] {
+        width: 100%;
+        accent-color: var(--green);
+        margin: 13px 0 4px;
+      }
+      .range-labels {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      .preset {
+        margin: 12px 0 18px;
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .preset .btn {
+        font-size: 11px;
+        padding: 6px 8px;
+      }
+      details {
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+        margin: 17px 0;
+      }
+      summary {
+        font-size: 13px;
+        cursor: pointer;
+      }
+      .weights {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 15px;
+      }
+      .reset {
+        width: 100%;
+        margin-top: 12px;
+      }
+      .error {
+        color: var(--orange);
+        font-size: 12px;
+        min-height: 16px;
+      }
+      .results {
+        grid-column: 1/-1;
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1fr;
+        gap: 0;
+        overflow: hidden;
+      }
+      .metric {
+        padding: 24px 28px;
+        border-right: 1px solid var(--line);
+      }
+      .metric:last-child {
+        border: 0;
+      }
+      .metric .label {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .metric strong {
+        font-size: 26px;
+        font-variant-numeric: tabular-nums;
+        display: block;
+        margin: 10px 0 5px;
+      }
+      .metric small {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .loss-track {
+        height: 7px;
+        background: #e2e7dc;
+        border-radius: 6px;
+        margin: 13px 0 6px;
+        overflow: hidden;
+      }
+      .loss-fill {
+        height: 100%;
+        background: var(--green);
+        transition: width 0.4s;
+      }
+      .table-panel {
+        grid-column: 1/-1;
+        padding: 24px 28px;
+      }
+      .table-panel h2 {
+        font-size: 19px;
+        margin: 0 0 7px;
+      }
+      .table-panel p {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .table-scroll {
+        overflow: auto;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 13px;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      th,
+      td {
+        text-align: right;
+        padding: 13px 15px;
+        border-bottom: 1px solid #e5e8df;
+      }
+      th {
+        font-size: 11px;
+        color: var(--muted);
+        font-weight: 500;
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      tr.selected {
+        background: #eef2e8;
+      }
+      td:last-child {
+        font-weight: 650;
+        color: var(--green);
+      }
+      .lesson {
+        grid-column: 1/-1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        padding: 5px 8px;
+      }
+      .lesson h3 {
+        font-size: 15px;
+      }
+      .lesson p {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .lesson strong {
+        color: var(--ink);
+      }
+      footer {
+        max-width: 1260px;
+        margin: auto;
+        padding: 0 32px 24px;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      @keyframes flow {
+        to {
+          stroke-dashoffset: -28;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+        aside {
+          grid-row: 2;
+        }
+        .field-row {
+          max-width: 400px;
+        }
+        .weights {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .results {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+        .metric {
+          padding: 18px;
+        }
+        .metric strong {
+          font-size: 20px;
+        }
+        .stamp {
+          display: none;
+        }
+      }
+      @media (max-width: 600px) {
+        header {
+          padding: 25px 18px;
+        }
+        .layout {
+          padding: 0 12px 25px;
+          gap: 12px;
+        }
+        .scene {
+          padding: 20px 12px 0;
+        }
+        .steps {
+          padding: 10px;
+          gap: 0;
+        }
+        .step {
+          font-size: 11px;
+          padding: 9px;
+        }
+        .explain {
+          margin: 15px 12px;
+          padding: 15px;
+        }
+        .controls {
+          padding: 0 12px 17px;
+        }
+        .results {
+          grid-template-columns: 1fr;
+        }
+        .metric {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+        .metric:last-child {
+          border: 0;
+        }
+        .lesson {
+          grid-template-columns: 1fr;
+          gap: 0;
+        }
+        .table-panel {
+          padding: 20px 15px;
+        }
+        .scene-top h2 {
+          font-size: 17px;
+        }
+        footer {
+          padding: 0 20px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <div class="eyebrow">NEURAL SIGNAL LAB / 01</div>
+        <h1>一条误差的旅程</h1>
+        <p>数值向前走，责任向后找。用六条连接，看懂一次学习。</p>
+      </div>
+      <div class="stamp">2 个输入 · 2 个隐藏节点 · 1 个输出</div>
+    </header>
+    <main class="layout">
+      <section class="panel main" id="main" aria-label="传播步骤">
+        <nav class="steps" aria-label="步骤选择"></nav>
+        <div class="scene">
+          <div class="scene-top">
+            <h2 id="sceneTitle"></h2>
+            <span class="phase-label" id="phase"></span>
+          </div>
+          <svg
+            class="graph"
+            id="graph"
+            viewBox="0 0 760 330"
+            role="group"
+            aria-labelledby="graphTitle graphDesc"
+          >
+            <title id="graphTitle">两层 ReLU 神经网络</title>
+            <desc id="graphDesc">
+              输入 A 和 B 分别连接隐藏节点 1、2，隐藏节点连接输出节点
+              3。点击连接可查看计算。
+            </desc>
+          </svg>
+          <p class="hint">点击一条连接，追踪这个权重的计算与梯度</p>
+        </div>
+        <div class="explain" id="explain" aria-live="polite"></div>
+        <div class="controls">
+          <button class="btn" id="prev">← 上一步</button
+          ><button class="btn primary" id="next">下一步 →</button
+          ><button class="btn" id="play">自动演示</button
+          ><span class="count" id="count"></span>
+        </div>
+      </section>
+      <aside class="panel">
+        <h2>实验台</h2>
+        <p>默认值来自第一次作业。改一个数，观察整条计算链如何响应。</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="a">输入 A</label
+            ><input
+              id="a"
+              type="number"
+              step="0.1"
+              value="0.2"
+              min="-5"
+              max="5"
+            />
+          </div>
+          <div class="field">
+            <label for="b">输入 B</label
+            ><input
+              id="b"
+              type="number"
+              step="0.1"
+              value="0.3"
+              min="-5"
+              max="5"
+            />
+          </div>
+          <div class="field">
+            <label for="y">目标 y</label
+            ><input
+              id="y"
+              type="number"
+              step="0.1"
+              value="0.5"
+              min="-5"
+              max="5"
+            />
+          </div>
+        </div>
+        <div class="slider-head">
+          <label for="eta">学习率 η</label><output id="etaValue">1.00</output>
+        </div>
+        <input id="eta" type="range" min="0" max="20" step="0.1" value="1" />
+        <div class="range-labels">
+          <span>0 · 不更新</span><span>20 · 大步走</span>
+        </div>
+        <div class="preset">
+          <button class="btn" data-preset="normal">题目 η = 1</button
+          ><button class="btn" data-preset="large">试试 η = 20</button
+          ><button class="btn" data-preset="off">关闭节点 1</button>
+        </div>
+        <details>
+          <summary>调整六个初始权重</summary>
+          <div class="weights" id="weights"></div>
+        </details>
+        <button class="btn reset" id="reset">↺ 恢复题目并回到起点</button>
+        <p class="error" id="error" aria-live="polite"></p>
+        <p>
+          无偏置；所有节点使用 ReLU。在 z = 0 处演示采用导数
+          0。每次修改都会从初始参数重新计算一次更新。
+        </p>
+      </aside>
+      <section class="panel results" aria-label="更新前后对比">
+        <div class="metric">
+          <span class="label">一次更新后的结论 · 提前预览</span
+          ><strong id="verdict"></strong><small id="change"></small>
+          <div class="loss-track">
+            <div class="loss-fill" id="lossFill"></div>
+          </div>
+          <small>条长表示新损失 / 初始损失，最高显示 100%</small>
+        </div>
+        <div class="metric">
+          <span class="label">预测 ŷ · 初始 → 更新后</span
+          ><strong id="prediction"></strong><small id="target"></small>
+        </div>
+        <div class="metric">
+          <span class="label">平方损失 L · 初始 → 更新后</span
+          ><strong id="loss"></strong><small>L = ½ (y − ŷ)²</small>
+        </div>
+      </section>
+      <section class="panel table-panel">
+        <h2>六个权重，一起迈出一步</h2>
+        <p id="tableIntro"></p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>连接</th>
+                <th>初始权重 θ</th>
+                <th>梯度 ∂L/∂θ</th>
+                <th>改变量 −η∇L</th>
+                <th>更新后 θ′</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="lesson">
+        <div>
+          <h3>01 / 反向传播在问什么？</h3>
+          <p>
+            把一个权重轻轻调大，损失会往哪边走？<strong>梯度是这个变化率。</strong>从损失出发，沿路径乘上每个局部导数，就能把这个问题传回每条连接。
+          </p>
+        </div>
+        <div>
+          <h3>02 / ReLU 是一道门</h3>
+          <p>
+            z &gt; 0 时，数值和梯度都能通过；z &lt; 0 时，输出为
+            0，梯度也被截断。试试“关闭节点 1”，再观察相关权重的梯度。<strong
+              >步长过大也可能跨过目标、增大损失。</strong
+            >
+          </p>
+        </div>
+      </section>
+    </main>
+    <footer>
+      人工智能数学原理与算法基础 · 第一次作业交互演示 ·
+      页面显示值经过四舍五入，计算使用完整精度
+    </footer>
+    <script src="network.js"></script>
+    <script src="ui.js"></script>
+  </body>
+</html>
