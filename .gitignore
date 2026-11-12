@@ -24,3 +24,7 @@ AGENTS.md
 .build/
 
 .vscode/
+
+# Python 字节码
+__pycache__/
+*.py[cod]
