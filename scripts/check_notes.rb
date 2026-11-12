@@ -54,9 +54,10 @@ def parse_frontmatter(content)
   }
 end
 
-markdown_files = Dir.glob(File.join(ROOT, "**", "*.md"), File::FNM_DOTMATCH)
-                    .reject { |path| path.include?("/.git/") || path.include?("/.build/") }
+markdown_files = Dir.glob(["*.md", "[0-9][0-9]-*/**/*.md"], base: ROOT)
+                    .reject { |path| path == "AGENTS.md" }
                     .sort
+                    .map { |path| File.join(ROOT, path) }
 
 errors = []
 documents = {}
@@ -72,7 +73,7 @@ markdown_files.each do |path|
     next
   end
 
-  documents[path] = { content: content, metadata: metadata }
+  documents[path] = content
   prose = without_code_examples(content)
   stem = File.basename(path, ".md")
   rel_without_ext = rel.sub(/\.md\z/, "")
@@ -111,9 +112,12 @@ names.each do |name, paths|
   errors << "名称或 alias '#{name}' 指向多个文件: #{paths.to_a.sort.join(', ')}"
 end
 
-documents.each do |path, document|
+# The lab index links to student materials outside the course note namespace.
+lab_index = File.join(ROOT, "实验课", "README.md")
+documents[lab_index] = File.read(lab_index, encoding: "UTF-8") if File.file?(lab_index)
+
+documents.each do |path, content|
   rel = relative(path)
-  content = document[:content]
   prose = without_code_examples(content)
 
   prose.scan(/!?\[\[([^\]|#]+)(?:#[^\]|]*)?(?:\|[^\]]*)?\]\]/) do |match|

@@ -17,3 +17,18 @@ jobs:
 
       - name: Validate Markdown notes
         run: ruby scripts/check_notes.rb
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-docs.txt
+
+      - name: Install site dependencies
+        run: python -m pip install -r requirements-docs.txt
+
+      - name: Validate the published site
+        run: |
+          python scripts/prepare_docs.py
+          python -m mkdocs build --strict --site-dir .build/site

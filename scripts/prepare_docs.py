@@ -6,6 +6,8 @@ import os
 import re
 import shutil
 
+from markdown.extensions.toc import slugify_unicode
+
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT / ".build" / "docs"
@@ -27,9 +29,11 @@ PUBLIC_FILES = (
     "ATTRIBUTION.md",
     "LICENSE",
 )
+LABS_README_URL = "https://github.com/LUNARKN1GHT/USTC-AI-Notes/blob/main/实验课/README.md"
 
 WIKILINK = re.compile(r"(!?)\[\[([^\]]+)\]\]")
 INLINE_CODE = re.compile(r"(`+[^`]*?`+)")
+BLOCK_ID = re.compile(r"(?<=\S)[ \t]+\^([a-zA-Z0-9-]+)[ \t]*$")
 
 
 def aliases_for(path: Path) -> list[str]:
@@ -76,6 +80,8 @@ def build_link_index() -> tuple[dict[str, Path], dict[str, Path]]:
 def convert_wikilinks(path: Path, pages: dict[str, Path], assets: dict[str, Path]) -> None:
     """Convert Obsidian links in the staged copy without touching source notes."""
     source = path.read_text(encoding="utf-8")
+    if path == DOCS_DIR / "index.md":
+        source = source.replace("](实验课/README.md)", f"]({LABS_README_URL})")
     # Keep editorial status in the source vault, but don't expose it as a
     # Material navigation status icon in the public site.
     source = re.sub(
@@ -93,9 +99,10 @@ def convert_wikilinks(path: Path, pages: dict[str, Path], assets: dict[str, Path
         target = parts[0].strip()
         label = parts[1].strip() if len(parts) > 1 else target
         page_name, separator, heading = target.partition("#")
+        fragment = heading[1:] if heading.startswith("^") else slugify_unicode(heading, "-")
 
         if not page_name:
-            href = f"#{heading}"
+            href = f"#{fragment}"
         else:
             direct = Path(page_name)
             if direct.suffix.lower() != ".md":
@@ -108,7 +115,7 @@ def convert_wikilinks(path: Path, pages: dict[str, Path], assets: dict[str, Path
                 return label
             href = Path(os.path.relpath(DOCS_DIR / resolved, path.parent)).as_posix()
             if separator:
-                href += f"#{heading}"
+                href += f"#{fragment}"
 
         alt = label.split("|", 1)[0]
         return f"![{alt}](<{href}>)" if embedded else f"[{label}](<{href}>)"
@@ -122,7 +129,8 @@ def convert_wikilinks(path: Path, pages: dict[str, Path], assets: dict[str, Path
             output.append(line)
             continue
         chunks = INLINE_CODE.split(line)
-        output.append("".join(chunk if chunk.startswith("`") else WIKILINK.sub(replace, chunk) for chunk in chunks))
+        converted = "".join(chunk if chunk.startswith("`") else WIKILINK.sub(replace, chunk) for chunk in chunks)
+        output.append(BLOCK_ID.sub(r"\n{: #\1 }", converted))
 
     path.write_text("".join(output), encoding="utf-8")
 

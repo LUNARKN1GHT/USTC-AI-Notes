@@ -38,6 +38,7 @@ theme:
 nav:
   - 首页: index.md
   - 课程知识地图: 人工智能数学原理与算法A.md
+  - 公共基础: 00-公共基础/00-公共基础.md
   - 章节:
       - 数学基础: 00-数学基础/00-数学基础.md
       - 人工智能概述: 01-人工智能概述/01-人工智能概述.md
@@ -71,6 +72,11 @@ markdown_extensions:
   - tables
   - toc:
       permalink: true
+      slugify: !!python/name:markdown.extensions.toc.slugify_unicode
+
+validation:
+  links:
+    anchors: warn
 
 extra_javascript:
   - assets/javascripts/mathjax.js
