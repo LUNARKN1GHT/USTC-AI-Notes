@@ -1,0 +1,59 @@
+{
+  "fourrooms": {
+    "train": {
+      "episodes": 471,
+      "layouts": 443,
+      "steps": 7937
+    },
+    "test": {
+      "episodes": 119,
+      "layouts": 110,
+      "steps": 2073
+    },
+    "models": {
+      "Always forward": {
+        "expert_action_accuracy": 0.7973950505256653,
+        "successes": 2,
+        "episodes": 119,
+        "success_rate": 0.01680672268907563,
+        "mean_return": 0.016126050420168066,
+        "mean_steps_if_success": 4.5
+      },
+      "MLP": {
+        "expert_action_accuracy": 0.8716835379600525,
+        "successes": 80,
+        "episodes": 119,
+        "success_rate": 0.6722689075630253,
+        "mean_return": 0.45188235294117646,
+        "mean_steps_if_success": 36.425
+      },
+      "CNN": {
+        "expert_action_accuracy": 0.8789194226264954,
+        "successes": 97,
+        "episodes": 119,
+        "success_rate": 0.8151260504201681,
+        "mean_return": 0.5511764705882353,
+        "mean_steps_if_success": 35.97938144329897
+      }
+    }
+  },
+  "empty_grid": {
+    "training_episodes": 800,
+    "policies": {
+      "Random": {
+        "successes": 154,
+        "episodes": 200,
+        "success_rate": 0.77,
+        "mean_return": 0.528125,
+        "mean_steps_if_success": 34.9025974025974
+      },
+      "Q-learning": {
+        "successes": 200,
+        "episodes": 200,
+        "success_rate": 1.0,
+        "mean_return": 0.9649899999999999,
+        "mean_steps_if_success": 3.89
+      }
+    }
+  }
+}

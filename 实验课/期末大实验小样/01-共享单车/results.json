@@ -1,0 +1,213 @@
+{
+  "dataset": "Oslo City Bike August 2025",
+  "raw_rows": 176415,
+  "raw_csv_sha256": "93e9eb603f77f600364dc7235b10de234050a88e82339368e226afb3cda0f0f5",
+  "gbfs_source_sha256": "32f9a80cae41b08580265835456a028a17bcfe61024b9d5904b8d67ee5f8e9fb",
+  "frozen_station_sha256": "9002ffbe33cfc0e1daa55ee646ead12a7288e22eb80004182bde0da771c7014a",
+  "gbfs_last_updated_utc": "2026-11-13T09:21:45+00:00",
+  "stations": [
+    {
+      "station_id": "551",
+      "name": "Olaf Ryes plass",
+      "capacity": 35
+    },
+    {
+      "station_id": "421",
+      "name": "Alexander Kiellands Plass",
+      "capacity": 24
+    },
+    {
+      "station_id": "408",
+      "name": "Tøyen skole",
+      "capacity": 15
+    },
+    {
+      "station_id": "480",
+      "name": "Helga Helgesens plass",
+      "capacity": 25
+    },
+    {
+      "station_id": "396",
+      "name": "Kirkeristen",
+      "capacity": 24
+    },
+    {
+      "station_id": "489",
+      "name": "Torggata",
+      "capacity": 30
+    },
+    {
+      "station_id": "460",
+      "name": "Botanisk Hage sør",
+      "capacity": 29
+    },
+    {
+      "station_id": "607",
+      "name": "Marcus Thranes gate",
+      "capacity": 30
+    },
+    {
+      "station_id": "398",
+      "name": "Ringnes Park",
+      "capacity": 18
+    },
+    {
+      "station_id": "464",
+      "name": "Sukkerbiten",
+      "capacity": 44
+    },
+    {
+      "station_id": "438",
+      "name": "BI Nydalen",
+      "capacity": 42
+    },
+    {
+      "station_id": "2357",
+      "name": "Aker Brygge 2 mot Rådhusplassen",
+      "capacity": 24
+    },
+    {
+      "station_id": "479",
+      "name": "Tjuvholmen",
+      "capacity": 30
+    },
+    {
+      "station_id": "384",
+      "name": "Vår Frelsers gravlund",
+      "capacity": 18
+    },
+    {
+      "station_id": "485",
+      "name": "Sommerfrydhagen",
+      "capacity": 21
+    },
+    {
+      "station_id": "446",
+      "name": "Bislett Stadion",
+      "capacity": 24
+    }
+  ],
+  "time_zone": "Europe/Oslo",
+  "target": "hourly checkout and return counts; one hour ahead",
+  "split": {
+    "training": [
+      "2025-08-01",
+      "2025-08-20"
+    ],
+    "validation": [
+      "2025-08-20",
+      "2025-08-25"
+    ],
+    "test": [
+      "2025-08-25",
+      "2025-09-01"
+    ],
+    "right_endpoint_exclusive": true,
+    "training_hours": 360,
+    "validation_hours": 100,
+    "test_hours": 140
+  },
+  "test_count_cells": 4480,
+  "test": {
+    "historical_average": {
+      "mae": 1.777734375,
+      "checkout_mae": 1.7031994047619048,
+      "return_mae": 1.8522693452380956,
+      "rmse": 2.523572830109931,
+      "rush_mae": 2.7423611111111112
+    },
+    "local_ridge": {
+      "mae": 1.698126063482782,
+      "checkout_mae": 1.678156257421244,
+      "return_mae": 1.7180958695443198,
+      "rmse": 2.379701704931878,
+      "rush_mae": 2.5626907659459714
+    },
+    "neighbor_ridge": {
+      "mae": 1.6799968144611475,
+      "checkout_mae": 1.6595086282435825,
+      "return_mae": 1.7004850006787124,
+      "rmse": 2.3599071846008957,
+      "rush_mae": 2.5751958348614306
+    }
+  },
+  "tuning": {
+    "historical_average": {
+      "validation_mae": 1.632421875
+    },
+    "local_ridge": {
+      "validation_mae": 1.7652288877881963,
+      "ridge_weight": 0.001
+    },
+    "neighbor_ridge": {
+      "validation_mae": 1.737066169362737,
+      "ridge_weight": 0.001
+    }
+  },
+  "replay": {
+    "recorded_request_count": 10128,
+    "policies": {
+      "no_transfer": {
+        "checkout_attempts": 5379,
+        "blocked_checkouts": 435,
+        "return_attempts": 5648,
+        "blocked_returns": 2504,
+        "moves": 0,
+        "bikes_moved": 0,
+        "bikes_entered": 4749,
+        "bikes_left": 4042,
+        "end_waiting_to_dock": 647,
+        "end_in_transit": 3
+      },
+      "stock_greedy": {
+        "checkout_attempts": 5379,
+        "blocked_checkouts": 114,
+        "return_attempts": 5718,
+        "blocked_returns": 2095,
+        "moves": 134,
+        "bikes_moved": 387,
+        "bikes_entered": 4749,
+        "bikes_left": 4293,
+        "end_waiting_to_dock": 324,
+        "end_in_transit": 3
+      },
+      "historical_average_greedy": {
+        "checkout_attempts": 5379,
+        "blocked_checkouts": 115,
+        "return_attempts": 5717,
+        "blocked_returns": 2055,
+        "moves": 135,
+        "bikes_moved": 391,
+        "bikes_entered": 4749,
+        "bikes_left": 4293,
+        "end_waiting_to_dock": 321,
+        "end_in_transit": 3
+      },
+      "local_ridge_greedy": {
+        "checkout_attempts": 5379,
+        "blocked_checkouts": 120,
+        "return_attempts": 5714,
+        "blocked_returns": 2108,
+        "moves": 135,
+        "bikes_moved": 392,
+        "bikes_entered": 4749,
+        "bikes_left": 4291,
+        "end_waiting_to_dock": 327,
+        "end_in_transit": 3
+      },
+      "neighbor_ridge_greedy": {
+        "checkout_attempts": 5379,
+        "blocked_checkouts": 117,
+        "return_attempts": 5716,
+        "blocked_returns": 2088,
+        "moves": 135,
+        "bikes_moved": 392,
+        "bikes_entered": 4749,
+        "bikes_left": 4292,
+        "end_waiting_to_dock": 327,
+        "end_in_transit": 3
+      }
+    }
+  },
+  "wall_seconds": 0.589
+}
