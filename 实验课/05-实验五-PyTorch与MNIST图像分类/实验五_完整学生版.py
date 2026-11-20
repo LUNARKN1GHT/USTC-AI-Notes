@@ -18,7 +18,7 @@
 # python -m pip install torch torchvision numpy matplotlib
 # ```
 #
-# CPU 足够完成必做实验；CUDA 安装可参考 [PyTorch 安装说明](../实验四-神经网络与反向传播/PyTorch安装说明.md) 和 [官方安装选择器](https://pytorch.org/get-started/locally/)。不需要安装 d2l 包。
+# CPU 足够完成必做实验；CUDA 安装可参考 [PyTorch 安装说明](../04-实验四-神经网络与反向传播/PyTorch安装说明.md) 和 [官方安装选择器](https://pytorch.org/get-started/locally/)。不需要安装 d2l 包。
 #
 # 第一次联网运行时，将下一单元的 `DOWNLOAD` 改为 `True`；数据缓存就绪后改回 `False`。离线时复制教师已准备的 `data/MNIST/raw/` 目录；这里的下载开关与 pip 软件源无关。
 #
