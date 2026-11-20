@@ -1,0 +1,6 @@
+*/data/
+*/.deps
+.venv/
+__pycache__/
+.pytest_cache/
+.mplconfig/

@@ -1,0 +1,121 @@
+{
+  "source": "https://gbfs.urbansharing.com/oslobysykkel.no/station_information.json",
+  "last_updated": 1794561705,
+  "source_sha256": "32f9a80cae41b08580265835456a028a17bcfe61024b9d5904b8d67ee5f8e9fb",
+  "data": {
+    "stations": [
+      {
+        "station_id": "2357",
+        "name": "Aker Brygge 2 mot Rådhusplassen",
+        "lat": 59.91113081194453,
+        "lon": 10.730409170393784,
+        "capacity": 24
+      },
+      {
+        "station_id": "607",
+        "name": "Marcus Thranes gate",
+        "lat": 59.93277225626508,
+        "lon": 10.758594919923468,
+        "capacity": 30
+      },
+      {
+        "station_id": "398",
+        "name": "Ringnes Park",
+        "lat": 59.92843404417577,
+        "lon": 10.75943014633117,
+        "capacity": 18
+      },
+      {
+        "station_id": "464",
+        "name": "Sukkerbiten",
+        "lat": 59.9051667124711,
+        "lon": 10.753782728070433,
+        "capacity": 44
+      },
+      {
+        "station_id": "438",
+        "name": "BI Nydalen",
+        "lat": 59.949239,
+        "lon": 10.768576,
+        "capacity": 42
+      },
+      {
+        "station_id": "489",
+        "name": "Torggata",
+        "lat": 59.91598309274519,
+        "lon": 10.75155119076095,
+        "capacity": 30
+      },
+      {
+        "station_id": "551",
+        "name": "Olaf Ryes plass",
+        "lat": 59.922425,
+        "lon": 10.758182,
+        "capacity": 35
+      },
+      {
+        "station_id": "479",
+        "name": "Tjuvholmen",
+        "lat": 59.909467,
+        "lon": 10.722509,
+        "capacity": 30
+      },
+      {
+        "station_id": "384",
+        "name": "Vår Frelsers gravlund",
+        "lat": 59.91944043984847,
+        "lon": 10.7437646218726,
+        "capacity": 18
+      },
+      {
+        "station_id": "408",
+        "name": "Tøyen skole",
+        "lat": 59.914943,
+        "lon": 10.773977,
+        "capacity": 15
+      },
+      {
+        "station_id": "480",
+        "name": "Helga Helgesens plass",
+        "lat": 59.9121109,
+        "lon": 10.7661939,
+        "capacity": 25
+      },
+      {
+        "station_id": "421",
+        "name": "Alexander Kiellands Plass",
+        "lat": 59.92806670615684,
+        "lon": 10.751202636819613,
+        "capacity": 24
+      },
+      {
+        "station_id": "396",
+        "name": "Kirkeristen",
+        "lat": 59.91300035973293,
+        "lon": 10.746760585982287,
+        "capacity": 24
+      },
+      {
+        "station_id": "446",
+        "name": "Bislett Stadion",
+        "lat": 59.925471317049954,
+        "lon": 10.73121932213806,
+        "capacity": 24
+      },
+      {
+        "station_id": "460",
+        "name": "Botanisk Hage sør",
+        "lat": 59.915417698024385,
+        "lon": 10.76933022142641,
+        "capacity": 29
+      },
+      {
+        "station_id": "485",
+        "name": "Sommerfrydhagen",
+        "lat": 59.911453,
+        "lon": 10.776072,
+        "capacity": 21
+      }
+    ]
+  }
+}

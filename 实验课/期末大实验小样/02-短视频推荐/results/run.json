@@ -1,0 +1,81 @@
+{
+  "source": "https://zenodo.org/records/10439422/files/KuaiRand-Pure.tar.gz",
+  "archive_md5": "0820331067a3784d9691136f772b35a7",
+  "tab": 1,
+  "history_rows": 580854,
+  "history_dates": [
+    20220409,
+    20220413
+  ],
+  "training_rows": 235984,
+  "training_dates": [
+    20220414,
+    20220421
+  ],
+  "shared_test_dates": [
+    20220422,
+    20220423,
+    20220424,
+    20220425,
+    20220426,
+    20220427,
+    20220428,
+    20220429,
+    20220430,
+    20220501,
+    20220502,
+    20220503,
+    20220504,
+    20220505,
+    20220506,
+    20220507,
+    20220508
+  ],
+  "test_diagnostics": {
+    "randomized": {
+      "unique_users": 27000,
+      "unique_videos": 7299,
+      "median_duration_seconds": 80.4,
+      "user_seen_in_history_fraction": 0.8998469414128175,
+      "video_seen_in_history_fraction": 0.9426823188857826
+    },
+    "standard": {
+      "unique_users": 24486,
+      "unique_videos": 5682,
+      "median_duration_seconds": 71.6,
+      "user_seen_in_history_fraction": 0.8990846962855856,
+      "video_seen_in_history_fraction": 0.998454032474412
+    }
+  },
+  "training_long_view_rate": 0.395734456573327,
+  "history_model": {
+    "intercept": -0.4871092066086161,
+    "features": {
+      "log_duration": {
+        "center": 4.135178986582326,
+        "scale": 1.0380216437291983,
+        "coefficient": -0.044245661884809204
+      },
+      "log_user_history_count": {
+        "center": 3.1812202924462323,
+        "scale": 1.1806940557357886,
+        "coefficient": -0.15384303164355767
+      },
+      "user_history_long_view_rate": {
+        "center": 0.3967707484522064,
+        "scale": 0.1143426079168484,
+        "coefficient": 0.5527615939938334
+      },
+      "log_video_history_count": {
+        "center": 5.353523250914111,
+        "scale": 1.4264204275243926,
+        "coefficient": 0.013795360629493037
+      },
+      "video_history_long_view_rate": {
+        "center": 0.3916480261727675,
+        "scale": 0.11125807482796334,
+        "coefficient": 0.39480402709472046
+      }
+    }
+  }
+}
