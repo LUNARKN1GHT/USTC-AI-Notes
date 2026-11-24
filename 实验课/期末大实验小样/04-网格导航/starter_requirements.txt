@@ -1,0 +1,4 @@
+numpy>=1.24,<3
+h5py>=3.8,<4
+gymnasium==0.29.1
+minigrid==2.3.1
